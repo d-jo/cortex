@@ -3,7 +3,7 @@ pragma solidity ^0.4.2;
 contract owned {
 	address public owner;
 
-	function owned() {
+	function owned() public {
 		owner = msg.sender;
 	}
 
@@ -12,7 +12,7 @@ contract owned {
 		_;
 	}
 
-	function transferOwnership(address newOwner) onlyOwner {
+	function transferOwnership(address newOwner) onlyOwner public {
 		owner = newOwner;
 	}
 }
@@ -22,17 +22,17 @@ contract owned {
 */
 contract ERC20Interface {
 	// get the total supply of the token
-	function totalSupply() constant returns (uint256 totalSupply);
+	function totalSupply() public constant returns (uint256 supply);
 	// get the account balance of _owner
-	function balanceOf(address _owner) constant returns (uint256 balance);
+	function balanceOf(address _owner) public constant returns (uint256 balance);
 	// transfer _value tokens to address _to
-	function transfer(address _to, uint256 _value) returns (bool success);
+	function transfer(address _to, uint256 _value) public returns (bool success);
 	// transfer _value tokens from address _from to address _to
-	function transferFrom(address _from, address _to, uint256 _amount) returns (bool success);
+	function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success);
 	// allow _spender to spend _value tokens from msg.senders account
-	function approve(address _spender, uint256 _value) returns (bool success);
+	function approve(address _spender, uint256 _value) public returns (bool success);
 	// returns the amount of tokens _spender has left
-	function allowance(address _owner, address _spender) constant returns (uint remaining);
+	function allowance(address _owner, address _spender) public constant returns (uint remaining);
 	// event triggered when tokens are transfered
 	event Transfer(address indexed _from, address indexed _to, uint _value);
 	// event triggered when approve is called
@@ -43,11 +43,11 @@ contract Cortex is owned, ERC20Interface {
 	// ================================================
 	// CONSTANTS
 	// ================================================
-	string public standard = 'ERC20';
+	string public constant standard = 'ERC20';
 	string public constant name = 'cortex';
 	string public constant symbol = 'ctx';
 	uint8 public constant decimals = 18;
-	uint256 _totalSupply = 0xffffffff;
+	uint256 public constant _totalSupply = 0xffffffff;
 
 
 	// ================================================
@@ -57,22 +57,22 @@ contract Cortex is owned, ERC20Interface {
 	mapping (address => mapping (address => uint256)) public allowed;
 
 	// constructor for token, assign all tokens to creator
-	function Cortex() {
+	function Cortex() public {
 		balances[msg.sender] = _totalSupply;
 	}
 
 	// implementation of ERC20 totalSupply function
-	function totalSupply() constant returns (uint256 totalSupply) {
-		totalSupply = _totalSupply;
+	function totalSupply() public constant returns (uint256 supply) {
+		supply = _totalSupply;
 	}
 
 	// implementation of ERC20 balance function
-	function balanceOf(address _owner) constant returns (uint256 balance) {
+	function balanceOf(address _owner) public constant returns (uint256 balance) {
 		return balances[_owner]; // return the balance of the address requested
 	}
 
 	// implementation of ERC20 transfer function
-	function transfer(address _to, uint256 _value) returns (bool success) {
+	function transfer(address _to, uint256 _value) public returns (bool success) {
 		/** conditions, in order:
 			1. spender has enough tokens
 			2. check for overflow attack
@@ -94,7 +94,7 @@ contract Cortex is owned, ERC20Interface {
 
 
 	// implementation of ERC20 transferFrom function
-	function transferFrom(address _from, address _to, uint256 _amount) returns (bool success) {
+	function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success) {
 		/** conditions, in order:
 		  	1. spender has enough tokens
 			2. check for overflow attacks
@@ -118,18 +118,18 @@ contract Cortex is owned, ERC20Interface {
 	}
 
 	// implementation of ERC20 approve function
-	function approve(address _spender, uint256 _amount) returns (bool success) {
+	function approve(address _spender, uint256 _amount) public returns (bool success) {
 		allowed[msg.sender][_spender] = _amount;
 		Approval(msg.sender, _spender, _amount);
 		return true;
 	}
 
 	// implementation of ERC20 allowance function
-	function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
+	function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
 		return allowed[_owner][_spender];
 	}
 
-	function () {
+	function () public {
 		revert();     // Prevents accidental sending of ether
 	}
 }
