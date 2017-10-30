@@ -55,7 +55,7 @@ contract ICO is owned {
 		//todo give tokens
 	}
 	
-	function withdrawl(uint amount) public onlyTrusted {
+	function withdraw(uint amount) public onlyTrusted {
 		require(amount <= ethereumReleased);
 		ethereumReleased -= amount;
 		msg.sender.transfer(amount);
