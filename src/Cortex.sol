@@ -1,21 +1,6 @@
 pragma solidity ^0.4.2;
 
-contract owned {
-	address public owner;
-
-	function owned() public {
-		owner = msg.sender;
-	}
-
-	modifier onlyOwner {
-		require(msg.sender == owner);
-		_;
-	}
-
-	function transferOwnership(address newOwner) onlyOwner public {
-		owner = newOwner;
-	}
-}
+import "./Beneficiary.sol"
 
 /**
 	spec for the ERC20 interface, a standard for Ethereum tokens.
