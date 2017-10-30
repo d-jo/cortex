@@ -4,7 +4,7 @@ import "./Cortex.sol";
 import "./Association.sol";
 import "./Beneficiary.sol";
 
-contract ICO {
+contract ICO is owned {
 	
 	uint public ethereumRaised;
 	uint public ethereumMax;
@@ -55,8 +55,10 @@ contract ICO {
 		//todo give tokens
 	}
 	
-	function withdrawl(uint amount) {
-		require(amount < ethereumReleased);
+	function withdrawl(uint amount) public onlyTrusted {
+		require(amount <= ethereumReleased);
+		ethereumReleased -= amount;
+		msg.sender.transfer(amount);
 	}
 
 
