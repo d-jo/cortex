@@ -4,7 +4,7 @@ import "./Cortex.sol";
 import "./Association.sol";
 import "./Beneficiary.sol";
 
-contract ICO is owned {
+contract ICO {
 	
 	uint public ethereumRaised;
 	uint public ethereumMax;
