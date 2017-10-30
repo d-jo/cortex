@@ -2,15 +2,10 @@ pragma solidity ^0.4.2;
 
 import "./Cortex.sol";
 import "./Association.sol";
+import "./Beneficiary.sol";
 
 contract ICO {
 	
-	struct Vote {
-		address voter;
-		uint vote;
-	}
-
-	address public beneficiary;
 	uint public ethereumRaised;
 	uint public ethereumMax;
 	uint public saleStartTime;
@@ -21,7 +16,6 @@ contract ICO {
 	bool public goalReached;
 	bool public allowRefunds;
 	uint public ethereumReleased;
-	Vote[] public votes;
 
 	event Purchase(address indexed _buyer, uint _ethereumSpent, uint _cortexReceived);
 	event SaleOpen(uint _cortexAvailable);
@@ -29,17 +23,19 @@ contract ICO {
 	event Withdrawal(address indexed _target, uint _ethereumAmount);
 	event Refund(address indexed _target, uint _cortexAmount);
 
-	modifier coinholders {
-		require(token.balanceOf(msg.sender) > 0);
+	modifier duringSale {
+		require(now > saleStartTime);
+		require(now < deadline);
 		_;
 	}
-
+	
 	modifier whenRefundable {
-		require(allowRefund);
+		require(allowRefunds);
 		_;
 	}
 
 	function ICO() public {
+		beneficiaryList.push(msg.sender);
 		ethereumRaised = 0 ether;
 		ethereumMax = 3000 ether;
 		saleStartTime = now + 7 days;
@@ -51,4 +47,17 @@ contract ICO {
 		allowRefunds = false;
 		ethereumReleased = 0 ether;
 	}
+
+	function buy(uint ceiling) payable duringSale {
+		require(ethereumRaised <= ceiling);
+		uint amt = msg.value;
+		ethereumRaised += amt;
+		//todo give tokens
+	}
+	
+	function withdrawl(uint amount) {
+		require(amount < ethereumReleased);
+	}
+
+
 }
