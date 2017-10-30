@@ -47,7 +47,7 @@ contract Cortex is owned, ERC20Interface {
 	string public constant name = 'cortex';
 	string public constant symbol = 'ctx';
 	uint8 public constant decimals = 18;
-	uint256 public constant _totalSupply = 0xffffffff;
+	uint256 public constant _totalSupply = ;
 
 
 	// ================================================
