@@ -1,5 +1,7 @@
 pragma solidity ^0.4.2;
 
+import "./TrustManager.sol";
+
 contract Association {
 	
 	uint public minimumQuorum;
