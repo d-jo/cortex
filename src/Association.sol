@@ -65,7 +65,15 @@ contract Association is TrustManager {
 		numProposals = proposalID + 1;
 		return proposalID;
 	}
+
+	function newProposalInEther(address recipient, uint etherAmount, string description, bytes transactionBytecode) onlyVoters returns (uint proposalID) {
+		return newProposal(recipient, etherAmount * 1 ether, jobDescription, transactionBytecode);
+	}
 	
+	function checkProposalIntegrity(uint proposalNumber, address beneficiary, uint weiAmount, bytes transactionBytecode) constant returns (bool checksOut) {
+		Proposal storage p = proposals[proposalNumber];
+		return p.hash == sha3(beneficiary, weiAmount, transactionBytecode);
+	}
 
 
 }
