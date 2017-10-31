@@ -74,6 +74,17 @@ contract Association is TrustManager {
 		Proposal storage p = proposals[proposalNumber];
 		return p.hash == sha3(beneficiary, weiAmount, transactionBytecode);
 	}
-
+	
+	function vote(uint proposalNumber, bool support) onlyVoters returns (uint voteID) {
+		Proposal storage p = proposals[proposalNumber];
+		require(p.voted[msg.sender] != true);
+		
+		voteID = p.votes.length++;
+		p.votes[voteID] = Vote({inSupport: support, voter: msg.sender});
+		p.voted[msg.sender] = true;
+		p.voteCount = voteID + 1;
+		VoteCast(msg.sender, proposalNumber, support);
+		return voteID;
+	}
 
 }
