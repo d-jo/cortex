@@ -2,9 +2,9 @@ pragma solidity ^0.4.2;
 
 import "./Cortex.sol";
 import "./Association.sol";
-import "./Beneficiary.sol";
+import "./TrustManager.sol";
 
-contract ICO {
+contract ICO is TrustManager {
 	
 	uint public ethereumRaised;
 	uint public ethereumMax;
