@@ -1,6 +1,6 @@
 pragma solidity ^0.4.2;
 
-import "./Beneficiary.sol"
+import "./TrustManager.sol"
 
 /**
 	spec for the ERC20 interface, a standard for Ethereum tokens.
@@ -24,7 +24,7 @@ contract ERC20Interface {
 	event Approval(address indexed _owner, address indexed _spender, uint _value);
 }
 
-contract Cortex is owned, ERC20Interface {
+contract Cortex is TrustManager, ERC20Interface {
 	// ================================================
 	// CONSTANTS
 	// ================================================
@@ -32,7 +32,7 @@ contract Cortex is owned, ERC20Interface {
 	string public constant name = 'cortex';
 	string public constant symbol = 'ctx';
 	uint8 public constant decimals = 18;
-	uint256 public constant _totalSupply = ;
+	uint256 public constant _totalSupply = 2**256 - 1; // big number
 
 
 	// ================================================
