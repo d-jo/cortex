@@ -50,10 +50,21 @@ contract Association is TrustManager {
         minimumQuorum = newMinimumQuorum;
         voteLengthInMinutes = newVoteLengthInMinutes;
         minimumSharesToParticipate = newMinimumSharesToParticipate;
-        RulesetUpdate(msg.sender, minimumQuorum, voteLengthInMinutes, minimumSharesToParticipate);
+        RulesetUpdate(
+            msg.sender, 
+            minimumQuorum, 
+            voteLengthInMinutes, 
+            minimumSharesToParticipate
+        );
     }
 
-    function newProposal(address recipient, uint weiAmount, string description, bytes transactionBytecode) public onlyVoters returns (uint proposalID) {
+    function newProposal(
+        address recipient, 
+        uint weiAmount, 
+        string description, 
+        bytes transactionBytecode
+    ) public onlyVoters returns (uint proposalID) 
+    {
         proposalID = proposals.length++;
         Proposal storage p = proposals[proposalID];
         p.recipient = recipient;
@@ -64,15 +75,38 @@ contract Association is TrustManager {
         p.executed = false;
         p.passed = false;
         p.voteCount = 0;
-        ProposalCreated(msg.sender, proposalID, recipient, weiAmount, description);
+        ProposalCreated(
+            msg.sender, 
+            proposalID, 
+            recipient, 
+            weiAmount, 
+            description
+        );
         return proposalID;
     }
 
-    function newProposalInEther(address recipient, uint etherAmount, string description, bytes transactionBytecode) public onlyVoters returns (uint proposalID) {
-        return newProposal(recipient, etherAmount * 1 ether, description, transactionBytecode);
+    function newProposalInEther(
+        address recipient, 
+        uint etherAmount, 
+        string description, 
+        bytes transactionBytecode
+    ) public onlyVoters returns (uint proposalID) 
+    {
+        return newProposal(
+            recipient, 
+            etherAmount * 1 ether, 
+            description, 
+            transactionBytecode
+        );
     }
     
-    function checkProposalIntegrity(uint proposalNumber, address beneficiary, uint weiAmount, bytes transactionBytecode) public constant returns (bool checksOut) {
+    function checkProposalIntegrity(
+        uint proposalNumber, 
+        address beneficiary, 
+        uint weiAmount, 
+        bytes transactionBytecode
+    ) public constant returns (bool checksOut) 
+    {
         Proposal storage p = proposals[proposalNumber];
         return p.hash == keccak256(beneficiary, weiAmount, transactionBytecode);
     }
@@ -122,7 +156,12 @@ contract Association is TrustManager {
             p.passed = false;
         }
 
-        ProposalTallied(proposalNumber, yea - nay, quorum, p.passed);
+        ProposalTallied(
+            proposalNumber, 
+            yea - nay, 
+            quorum, 
+            p.passed
+        );
 
     }
 
