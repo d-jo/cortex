@@ -1,7 +1,5 @@
 pragma solidity ^0.4.2;
 
-import "./TrustManager.sol"
-
 /**
 	spec for the ERC20 interface, a standard for Ethereum tokens.
 */
@@ -24,7 +22,7 @@ contract ERC20Interface {
 	event Approval(address indexed _owner, address indexed _spender, uint _value);
 }
 
-contract Cortex is TrustManager, ERC20Interface {
+contract Cortex is ERC20Interface {
 	// ================================================
 	// CONSTANTS
 	// ================================================
