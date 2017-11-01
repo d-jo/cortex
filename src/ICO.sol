@@ -57,7 +57,7 @@ contract ICO is TrustManager {
 		ethereumReleased = 0 ether;
 	}
 
-	function buy(uint ceiling) payable duringSale return (bool) {
+	function buy(uint ceiling) public payable duringSale returns (bool) {
 		require(ethereumRaised <= ceiling);
 		uint amt = msg.value;
 		require(amt > 0);
@@ -71,7 +71,7 @@ contract ICO is TrustManager {
 		return (contributions[msg.sender] == amt);
 	}
 
-	function withdrawCortex(uint valueInCortex) public afterSuccesfulSale returns (bool) {
+	function withdrawCortex(uint valueInCortex) public afterSuccessfulSale returns (bool) {
 		uint contrib = contributions[msg.sender];
 		uint cortexReward = (contributions[msg.sender] * 1 ether) * cortexPerEther;
 		return cortexToken.transfer(msg.sender, cortexReward);
