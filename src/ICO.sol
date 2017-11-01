@@ -16,11 +16,12 @@ contract ICO is TrustManager {
 	bool public goalReached;
 	bool public allowRefunds;
 	uint public ethereumReleased;
+	mapping (address => uint) contributions;
 
-	event Purchase(address indexed _buyer, uint _ethereumSpent, uint _cortexReceived);
+	event Purchase(address indexed _buyer, uint _ethereumSpent);
 	event SaleOpen(uint _cortexAvailable);
 	event SaleClosed(uint _cortexUnsold);
-	event Withdrawal(address indexed _target, uint _ethereumAmount);
+	event Withdraw(address indexed _target, uint _ethereumAmount);
 	event Refund(address indexed _target, uint _cortexAmount);
 
 	modifier duringSale {
@@ -48,17 +49,25 @@ contract ICO is TrustManager {
 		ethereumReleased = 0 ether;
 	}
 
-	function buy(uint ceiling) payable duringSale {
+	function buy(uint ceiling) payable duringSale return (bool) {
 		require(ethereumRaised <= ceiling);
 		uint amt = msg.value;
+		require(amt > 0);
 		ethereumRaised += amt;
-		//todo give tokens
+		contributions[msg.sender] = amt;
+		Purchase(msg.sender, amt);
+		return (contributions[msg.sender] == amt);
 	}
 	
-	function withdraw(uint amount) public onlyTrusted {
+	function withdrawEther(uint valueInEther) public onlyTrusted returns (bool) {
+		amount = valueInEther * 1 ether;
 		require(amount <= ethereumReleased);
 		ethereumReleased -= amount;
-		msg.sender.transfer(amount);
+		Withdraw(msg.sender, amount);
+		return msg.sender.transfer(amount);
+	}
+
+	function withdrawRefund(uint cortexToRefund) public whenRefundable returns (bool) {
 	}
 
 
