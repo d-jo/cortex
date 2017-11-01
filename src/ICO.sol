@@ -4,18 +4,19 @@ import "./Cortex.sol";
 import "./Association.sol";
 import "./TrustManager.sol";
 
+
 contract ICO is TrustManager {
     
     uint public ethereumRaised;
     uint public ethereumMax;
     uint public saleStartTime;
     uint public deadline;
-    uint public constant cortexPerEther = 10;
+    uint public constant CORTEX_PER_ETH = 10;
     Cortex public cortexToken;
     Association public controllingBoard;
     bool public goalReached;
     uint public ethereumReleased;
-    uint public constant goalInEthereum = 25000 ether;
+    uint public constant GOAL_IN_ETHER = 25000 ether;
     mapping (address => uint) contributions;
 
     event Purchase(address indexed _buyer, uint _ethereumSpent);
@@ -61,7 +62,7 @@ contract ICO is TrustManager {
         ethereumRaised += amt;
         contributions[msg.sender] = amt;
         Purchase(msg.sender, amt);
-        if (ethereumRaised >= goalInEthereum) {
+        if (ethereumRaised >= GOAL_IN_ETHER) {
             goalReached = true;
             GoalReached();
         }
@@ -70,7 +71,7 @@ contract ICO is TrustManager {
 
     function withdrawCortex(uint valueInCortex) public afterSuccessfulSale returns (bool) {
         uint contrib = contributions[msg.sender];
-        uint cortexReward = (contributions[msg.sender] * 1 ether) * cortexPerEther;
+        uint cortexReward = (contrib * 1 ether) * CORTEX_PER_ETH;
         return cortexToken.transfer(msg.sender, cortexReward);
     }
     

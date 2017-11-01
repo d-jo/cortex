@@ -1,5 +1,6 @@
 pragma solidity ^0.4.2;
 
+
 contract TrustManager {
 
     mapping (address => bool) private trusted;

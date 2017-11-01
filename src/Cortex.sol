@@ -1,8 +1,6 @@
 pragma solidity ^0.4.2;
 
-/**
-    spec for the ERC20 interface, a standard for Ethereum tokens.
-*/
+
 contract ERC20Interface {
     // get the total supply of the token
     function totalSupply() public constant returns (uint256 supply);
@@ -22,14 +20,15 @@ contract ERC20Interface {
     event Approval(address indexed _owner, address indexed _spender, uint _value);
 }
 
+
 contract Cortex is ERC20Interface {
     // ================================================
     // CONSTANTS
     // ================================================
-    string public constant standard = 'ERC20';
-    string public constant name = 'cortex';
-    string public constant symbol = 'ctx';
-    uint8 public constant decimals = 18;
+    string public constant STANDARD = "ERC20";
+    string public constant NAME = "cortex";
+    string public constant SYMBOL = "ctx";
+    uint8 public constant DECIMALS = 18;
     uint256 public constant _totalSupply = 2**256 - 1; // big number
 
 
@@ -56,14 +55,7 @@ contract Cortex is ERC20Interface {
 
     // implementation of ERC20 transfer function
     function transfer(address _to, uint256 _value) public returns (bool success) {
-        /** conditions, in order:
-            1. spender has enough tokens
-            2. check for overflow attack
-        */
-        if(
-            (balances[msg.sender] > _value) &&
-            (balances[_to] + _value > balances[_to])
-        ) {
+        if ((balances[msg.sender] > _value) && (balances[_to] + _value > balances[_to])) {
             // conditions are good, transfer the tokens
             balances[msg.sender] -= _value;
             balances[_to] += _value;
@@ -75,7 +67,6 @@ contract Cortex is ERC20Interface {
         return false;
     }
 
-
     // implementation of ERC20 transferFrom function
     function transferFrom(address _from, address _to, uint256 _amount) public returns (bool success) {
         /** conditions, in order:
@@ -83,10 +74,8 @@ contract Cortex is ERC20Interface {
             2. check for overflow attacks
             3. check that the message sender has the allowance
         */
-        if(
-            (balances[_from] > _amount) &&
-            (balances[_to] + _amount > balances[_to]) &&
-            (_amount <= allowed[_from][msg.sender])
+        if (
+            (balances[_from] > _amount) && (balances[_to] + _amount > balances[_to]) && (_amount <= allowed[_from][msg.sender])
         ) {
             // conditions are good, transfer the token
             balances[_from] -= _amount;
