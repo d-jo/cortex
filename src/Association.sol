@@ -56,23 +56,22 @@ contract Association is TrustManager {
 		p.recipient = recipient;
 		p.amount = weiAmount;
 		p.description = description;
-		p.hash = sha3(recipient, weiAmount, transactionBytecode);
+		p.hash = keccak256(recipient, weiAmount, transactionBytecode);
 		p.voteDeadline = now + voteLengthInMinutes * 1 minutes;
 		p.executed = false;
 		p.passed = false;
 		p.voteCount = 0;
-		ProposalCreated(msg.sender, proposalID, recipient, weiAmount, jobDescription);
-		numProposals = proposalID + 1;
+		ProposalCreated(msg.sender, proposalID, recipient, weiAmount, description);
 		return proposalID;
 	}
 
 	function newProposalInEther(address recipient, uint etherAmount, string description, bytes transactionBytecode) public onlyVoters returns (uint proposalID) {
-		return newProposal(recipient, etherAmount * 1 ether, jobDescription, transactionBytecode);
+		return newProposal(recipient, etherAmount * 1 ether, description, transactionBytecode);
 	}
 	
 	function checkProposalIntegrity(uint proposalNumber, address beneficiary, uint weiAmount, bytes transactionBytecode) public constant returns (bool checksOut) {
 		Proposal storage p = proposals[proposalNumber];
-		return p.hash == sha3(beneficiary, weiAmount, transactionBytecode);
+		return p.hash == keccak256(beneficiary, weiAmount, transactionBytecode);
 	}
 	
 	function vote(uint proposalNumber, bool support) public onlyVoters returns (uint voteID) {
@@ -90,9 +89,9 @@ contract Association is TrustManager {
 	function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
 		Proposal storage p = proposals[proposalNumber];
 
-		require(now > p.deadline);
+		require(now > p.voteDeadline);
 		require(!p.executed);
-		require(p.hash == sha3(p.recipient, p.amount, transactionBytecode));
+		require(p.hash == keccak256(p.recipient, p.amount, transactionBytecode));
 
 
 		uint quorum = 0;
