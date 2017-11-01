@@ -10,11 +10,10 @@ contract ICO is TrustManager {
 	uint public ethereumMax;
 	uint public saleStartTime;
 	uint public deadline;
-	uint public currentPrice;
+	uint public constant cortexPerEth = 10;
 	Cortex public cortexToken;
 	Association public controllingBoard;
 	bool public goalReached;
-	bool public allowRefunds;
 	uint public ethereumReleased;
 	mapping (address => uint) contributions;
 
@@ -29,9 +28,16 @@ contract ICO is TrustManager {
 		require(now < deadline);
 		_;
 	}
+
+	modifier afterSuccessfulSale {
+		require(now > deadline);
+		require(goalReached);
+		_;
+	}
 	
-	modifier whenRefundable {
-		require(allowRefunds);
+	modifier afterFailedSale {
+		require(now > deadline);
+		require(!goalReached);
 		_;
 	}
 
@@ -58,6 +64,10 @@ contract ICO is TrustManager {
 		Purchase(msg.sender, amt);
 		return (contributions[msg.sender] == amt);
 	}
+
+	function withdrawCortex(uint valueInCortex) public afterSuccesfulSale returns (bool) {
+		uint contrib = contributions[msg.sender];
+	}
 	
 	function withdrawEther(uint valueInEther) public onlyTrusted returns (bool) {
 		amount = valueInEther * 1 ether;
@@ -67,8 +77,14 @@ contract ICO is TrustManager {
 		return msg.sender.transfer(amount);
 	}
 
-	function withdrawRefund(uint cortexToRefund) public whenRefundable returns (bool) {
+	function withdrawRefund(uint etherToWithdraw) public afterFailedSale returns (bool) {
+		uint amt = etherToWithdraw * 1 ether;
+		uint balance = contributions[msg.sender];
+		require(amt <= balance); 
+		contributions[msg.sender] = balance - amt; 
+		return msg.sender.transfer(amt);
 	}
+
 
 
 }
