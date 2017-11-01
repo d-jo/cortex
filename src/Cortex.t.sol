@@ -4,6 +4,7 @@ import "ds-test/test.sol";
 
 import "./Cortex.sol";
 
+
 contract TokenActor {
     
     Cortex cortex;
@@ -29,6 +30,7 @@ contract TokenActor {
     }
 
 }
+
 
 contract CortexTest is DSTest {
 

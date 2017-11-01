@@ -4,6 +4,7 @@ import "./TrustManager.sol";
 import "./ICO.sol";
 import "./Cortex.sol";
 
+
 contract Association is TrustManager {
     
     
@@ -43,7 +44,9 @@ contract Association is TrustManager {
     }
 
     function updateRules(uint newMinimumQuorum, uint newVoteLengthInMinutes, uint newMinimumSharesToParticipate) public onlyTrusted {
-        if (newMinimumQuorum == 0) newMinimumQuorum = 1;
+        if (newMinimumQuorum == 0) {
+            newMinimumQuorum = 1;
+        }
         minimumQuorum = newMinimumQuorum;
         voteLengthInMinutes = newVoteLengthInMinutes;
         minimumSharesToParticipate = newMinimumSharesToParticipate;
@@ -98,11 +101,11 @@ contract Association is TrustManager {
         uint yea = 0;
         uint nay = 0;
 
-        for(uint i = 0; i < p.votes.length; ++i) {
+        for (uint i = 0; i < p.votes.length; ++i) {
             Vote storage v = p.votes[i];
             uint voteWeight = cortexToken.balanceOf(v.voter);
             quorum += voteWeight;
-            if(v.inSupport) {
+            if (v.inSupport) {
                 yea += voteWeight;
             } else {
                 nay += voteWeight;
@@ -113,7 +116,7 @@ contract Association is TrustManager {
 
         if (yea > nay) {
             p.executed = true;
-            require(p.recipient.call.value(p.amount)(transactionBytecode));
+            require(p.recipient.call.value(p.amount, transactionBytecode));
             p.passed = true;
         } else {
             p.passed = false;
