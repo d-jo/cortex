@@ -44,16 +44,13 @@ contract ICO is TrustManager {
 	}
 
 	function ICO() public {
-		beneficiaryList.push(msg.sender);
 		ethereumRaised = 0 ether;
 		ethereumMax = 3000 ether;
 		saleStartTime = now + 7 days;
 		deadline = saleStartTime + 7 days;
-		currentPrice = 12;
 		cortexToken = new Cortex();
 		controllingBoard = new Association();
 		goalReached = false;
-		allowRefunds = false;
 		ethereumReleased = 0 ether;
 	}
 
@@ -78,7 +75,7 @@ contract ICO is TrustManager {
 	}
 	
 	function withdrawEther(uint valueInEther) public onlyTrusted returns (bool) {
-		amount = valueInEther * 1 ether;
+		uint amount = valueInEther * 1 ether;
 		require(amount <= ethereumReleased);
 		ethereumReleased -= amount;
 		return msg.sender.transfer(amount);
@@ -89,7 +86,7 @@ contract ICO is TrustManager {
 		uint balance = contributions[msg.sender];
 		require(amt <= balance); 
 		contributions[msg.sender] = balance - amt; 
-		Refund(msg.sender, amount);
+		Refund(msg.sender, amt);
 		return msg.sender.transfer(amt);
 	}
 
