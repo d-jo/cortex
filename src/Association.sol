@@ -90,7 +90,7 @@ contract Association is TrustManager {
 	function executeProposal(uint proposalNumber, bytes transactionBytecode) {
 		Proposal storage p = proposals[proposalNumber];
 
-		require(new > p.deadline);
+		require(now > p.deadline);
 		require(!p.executed);
 		require(p.hash == sha3(p.recipient, p.amount, transactionBytecode));
 

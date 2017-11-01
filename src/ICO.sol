@@ -94,7 +94,7 @@ contract ICO is TrustManager {
 	}
 
 	function release(uint ethAmount) public onlyTrusted returns (bool) {
-		
+		ethereumReleased += ethAmount;		
 	}
 
 
