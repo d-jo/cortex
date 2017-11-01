@@ -42,7 +42,7 @@ contract Association is TrustManager {
 		_;
 	}
 
-	function updateRules(uint newMinimumQuorum, uint newVoteLengthInMinutes, uint newMinimumSharesToParticipate) onlyTrusted {
+	function updateRules(uint newMinimumQuorum, uint newVoteLengthInMinutes, uint newMinimumSharesToParticipate) public onlyTrusted {
 		if (newMinimumQuorum == 0) newMinimumQuorum = 1;
 		minimumQuorum = newMinimumQuorum;
 		voteLengthInMinutes = newVoteLengthInMinutes;
@@ -50,7 +50,7 @@ contract Association is TrustManager {
 		RulesetUpdate(msg.sender, minimumQuorum, voteLengthInMinutes, minimumSharesToParticipate);
 	}
 
-	function newProposal(address recipient, uint weiAmount, string description, bytes transactionBytecode) onlyVoters returns (uint proposalID) {
+	function newProposal(address recipient, uint weiAmount, string description, bytes transactionBytecode) public onlyVoters returns (uint proposalID) {
 		proposalID = proposals.length++;
 		Proposal storage p = proposals[proposalID];
 		p.recipient = recipient;
@@ -66,16 +66,16 @@ contract Association is TrustManager {
 		return proposalID;
 	}
 
-	function newProposalInEther(address recipient, uint etherAmount, string description, bytes transactionBytecode) onlyVoters returns (uint proposalID) {
+	function newProposalInEther(address recipient, uint etherAmount, string description, bytes transactionBytecode) public onlyVoters returns (uint proposalID) {
 		return newProposal(recipient, etherAmount * 1 ether, jobDescription, transactionBytecode);
 	}
 	
-	function checkProposalIntegrity(uint proposalNumber, address beneficiary, uint weiAmount, bytes transactionBytecode) constant returns (bool checksOut) {
+	function checkProposalIntegrity(uint proposalNumber, address beneficiary, uint weiAmount, bytes transactionBytecode) public constant returns (bool checksOut) {
 		Proposal storage p = proposals[proposalNumber];
 		return p.hash == sha3(beneficiary, weiAmount, transactionBytecode);
 	}
 	
-	function vote(uint proposalNumber, bool support) onlyVoters returns (uint voteID) {
+	function vote(uint proposalNumber, bool support) public onlyVoters returns (uint voteID) {
 		Proposal storage p = proposals[proposalNumber];
 		require(p.voted[msg.sender] != true);
 		
@@ -87,7 +87,7 @@ contract Association is TrustManager {
 		return voteID;
 	}
 
-	function executeProposal(uint proposalNumber, bytes transactionBytecode) {
+	function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
 		Proposal storage p = proposals[proposalNumber];
 
 		require(now > p.deadline);
