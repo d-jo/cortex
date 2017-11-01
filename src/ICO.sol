@@ -78,7 +78,7 @@ contract ICO is TrustManager {
 		uint amount = valueInEther * 1 ether;
 		require(amount <= ethereumReleased);
 		ethereumReleased -= amount;
-		return msg.sender.transfer(amount);
+		return msg.sender.send(amount);
 	}
 
 	function withdrawRefund(uint etherToWithdraw) public afterFailedSale returns (bool) {
@@ -87,7 +87,7 @@ contract ICO is TrustManager {
 		require(amt <= balance); 
 		contributions[msg.sender] = balance - amt; 
 		Refund(msg.sender, amt);
-		return msg.sender.transfer(amt);
+		return msg.sender.send(amt);
 	}
 
 	function release(uint ethAmount) public onlyTrusted returns (bool) {
