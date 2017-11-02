@@ -2,13 +2,11 @@ pragma solidity ^0.4.2;
 
 import "./Cortex.sol";
 import "./Association.sol";
-import "./TrustManager.sol";
 
 
-contract ICO is TrustManager {
+contract ICO {
     
     uint public ethereumRaised;
-    uint public ethereumMax;
     uint public saleStartTime;
     uint public deadline;
     uint public constant CORTEX_PER_ETH = 10;
@@ -27,32 +25,35 @@ contract ICO is TrustManager {
     event Refund(address indexed _target, uint _ethereumAmount);
 
     modifier duringSale {
-        require(now > saleStartTime);
-        require(now < deadline);
+        require(getTime() > saleStartTime);
+        require(getTime() < deadline);
         _;
     }
 
     modifier afterSuccessfulSale {
-        require(now > deadline);
+        require(getTime() > deadline);
         require(goalReached);
         _;
     }
     
     modifier afterFailedSale {
-        require(now > deadline);
+        require(getTime() > deadline);
         require(!goalReached);
         _;
     }
 
     function ICO() public {
         ethereumRaised = 0 ether;
-        ethereumMax = 3000 ether;
-        saleStartTime = now + 7 days;
+        saleStartTime = getTime() + 7 days;
         deadline = saleStartTime + 7 days;
         cortexToken = new Cortex();
         controllingBoard = new Association();
         goalReached = false;
         ethereumReleased = 0 ether;
+    }
+
+    function getTime() internal returns (uint) {
+        return now;
     }
 
     function buy(uint ceiling) public payable duringSale returns (bool) {
@@ -75,7 +76,8 @@ contract ICO is TrustManager {
         return cortexToken.transfer(msg.sender, cortexReward);
     }
     
-    function withdrawEther(uint valueInEther) public onlyTrusted returns (bool) {
+    function withdrawEther(uint valueInEther) public returns (bool) {
+        require(controllingBoard.isTrusted(msg.sender));
         uint amount = valueInEther * 1 ether;
         require(amount <= ethereumReleased);
         ethereumReleased -= amount;
@@ -91,8 +93,9 @@ contract ICO is TrustManager {
         return msg.sender.send(amt);
     }
 
-    function release(uint ethAmount) public onlyTrusted returns (bool) {
-        ethereumReleased += ethAmount;        
+    function release(uint ethAmount) public returns (bool) {
+        require(controllingBoard.isTrusted(msg.sender));
+        ethereumReleased += ethAmount;
     }
 
 
