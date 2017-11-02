@@ -24,7 +24,10 @@ contract TrustManager {
     function removeTrusted(address target) onlyTrusted public {
         trusted[target] = false;
         UserUntrusted(msg.sender, target);
-        
+    }
+
+    function isTrusted(address target) constant public returns (bool) {
+        return trusted[target] ? true : false;
     }
 
 }
