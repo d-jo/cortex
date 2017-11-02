@@ -150,7 +150,7 @@ contract Association is TrustManager {
 
         if (yea > nay) {
             p.executed = true;
-            require(p.recipient.call.value(p.amount, transactionBytecode));
+            require(p.recipient.call.value(p.amount)(transactionBytecode));
             p.passed = true;
         } else {
             p.passed = false;
