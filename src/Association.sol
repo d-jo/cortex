@@ -43,7 +43,7 @@ contract Association is TrustManager {
         _;
     }
 
-    function updateRules(uint newMinimumQuorum, uint newVoteLengthInMinutes, uint newMinimumSharesToParticipate) public onlyTrusted {
+    function updateRules(uint newMinimumQuorum, uint newVoteLengthInMinutes, uint newMinimumSharesToParticipate) private {
         if (newMinimumQuorum == 0) {
             newMinimumQuorum = 1;
         }
