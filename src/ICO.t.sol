@@ -54,5 +54,16 @@ contract ICOTest is DSTest {
         assert(ico.withdrawRefund(1 ether));
     }
 
+    function testFailReleaseEth() public {
+        testBuyWhenSale();
+        assert(ico.release(1));
+    }
+
+    function testReachGoal() public {
+        testIsSaleStarted();
+        expectEventsExact(ico);
+        assert(ico.buy.value(30000 ether)(50000 ether));
+        assert(ico.goalReached());
+    }
 
 }
