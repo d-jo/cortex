@@ -70,10 +70,16 @@ contract ICO {
         return (contributions[msg.sender] == amt);
     }
 
-    function withdrawCortex(uint valueInCortex) public afterSuccessfulSale returns (bool) {
+    function withdrawCortex(uint valueInEth) public afterSuccessfulSale returns (bool) {
         uint contrib = contributions[msg.sender];
-        uint cortexReward = (contrib * 1 ether) * CORTEX_PER_ETH;
-        return cortexToken.transfer(msg.sender, cortexReward);
+        require(contrib >= valueInEth);
+        uint cortexReward = (valueInEth * 1 ether) * CORTEX_PER_ETH;
+        if (cortexToken.transfer(msg.sender, cortexReward)) {
+            contributions[msg.sender] = contrib - valueInEth;
+            return true;
+        } else {
+            return false;
+        }
     }
     
     function withdrawEther(uint valueInEther) public returns (bool) {
@@ -96,6 +102,7 @@ contract ICO {
     function release(uint ethAmount) public returns (bool) {
         require(controllingBoard.isTrusted(msg.sender));
         ethereumReleased += ethAmount;
+        return true;
     }
 
 
