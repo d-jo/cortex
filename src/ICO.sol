@@ -6,6 +6,7 @@ import "./Association.sol";
 
 contract ICO {
     
+    address public beneficiary;
     uint public ethereumRaised;
     uint public saleStartTime;
     uint public deadline;
@@ -43,6 +44,7 @@ contract ICO {
     }
 
     function ICO() public {
+        beneficiary = msg.sender;
         ethereumRaised = 0 ether;
         saleStartTime = getTime() + 7 days;
         deadline = saleStartTime + 7 days;
@@ -83,7 +85,7 @@ contract ICO {
     }
     
     function withdrawEther(uint valueInEther) public returns (bool) {
-        require(controllingBoard.isTrusted(msg.sender));
+        require(msg.sender == beneficiary);
         uint amount = valueInEther * 1 ether;
         require(amount <= ethereumReleased);
         ethereumReleased -= amount;
