@@ -107,6 +107,9 @@ contract ICO {
         return true;
     }
 
+    function checkIsSale() public returns (bool) {
+        return (getTime() > saleStartTime) && (getTime() < deadline);
+    }
 
 
 }

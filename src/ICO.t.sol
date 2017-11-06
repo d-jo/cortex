@@ -16,9 +16,6 @@ contract EasyTestICO is ICO {
         fakeTime = time;
     }
 
-    function checkIsSale() public returns (bool) {
-        return (getTime() > saleStartTime) && (getTime() < deadline);
-    }
 
 }
 
