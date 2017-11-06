@@ -17,6 +17,7 @@ pragma solidity ^0.4.2;
 
 import "ds-test/test.sol";
 import "./ICO.sol";
+import "./Cortex.sol";
 
 
 contract EasyTestICO is ICO {
@@ -34,6 +35,7 @@ contract EasyTestICO is ICO {
 
 }
 
+
 contract ICOTest is DSTest {
 
     EasyTestICO ico;
@@ -42,6 +44,7 @@ contract ICOTest is DSTest {
         ico = new EasyTestICO();
         ico.setTime(now);
     }
+
 
     function testFailOwnership() public {
         assert(ico.controllingBoard().isTrusted(this));
@@ -78,4 +81,15 @@ contract ICOTest is DSTest {
         assert(ico.goalReached());
     }
 
+    function testWithdrawCortex() public {
+        testReachGoal();
+        ico.setTime(ico.deadline() + 1 days);
+        assert(ico.withdrawCortex(1));
+    }
+
+    function testCoinInteract() public {
+        testWithdrawCortex();
+        Cortex c = ico.cortexToken();
+        assert(c.balanceOf(this) == 10 ether);
+    }
 }
