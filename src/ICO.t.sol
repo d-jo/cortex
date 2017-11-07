@@ -66,7 +66,7 @@ contract ICOTest is DSTest {
 
     function testFailWithdrawDuringSale() public {
         testBuyWhenSale();
-        assert(ico.withdrawRefund(1 ether));
+        assert(ico.withdrawRefund());
     }
 
     function testFailReleaseEth() public {
@@ -84,12 +84,31 @@ contract ICOTest is DSTest {
     function testWithdrawCortex() public {
         testReachGoal();
         ico.setTime(ico.deadline() + 1 days);
-        assert(ico.withdrawCortex(1));
+        assert(ico.withdrawCortex());
     }
 
     function testCoinInteract() public {
         testWithdrawCortex();
         Cortex c = ico.cortexToken();
-        assert(c.balanceOf(this) == 10 ether);
+        log_named_uint("bal", c.balanceOf(this));
+        assert(c.balanceOf(this) == (300000 ether));    // I compare to 300000 'ether' because
+                                                        // 1 ether contribution = 10 cortex
+                                                        // but everything is done in wei
     }
+
+    function testSaleFailWithdraw() public {
+        uint bal = this.balance;
+        testIsSaleStarted();
+        testBuyWhenSale();
+        ico.setTime(ico.deadline() + 1 days);
+        assert(!ico.goalReached());
+        assert(!ico.checkIsSale());
+        assert(ico.withdrawRefund());
+        assert(bal == this.balance);
+    }
+
+    function () payable {
+        
+    }
+
 }
