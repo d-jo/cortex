@@ -61,7 +61,7 @@ contract CortexTest is DSTest {
     }
     
     function testTotalSupply() public {
-        assertEq(cortex.totalSupply(), 0xffffffff);
+        assertEq(cortex.totalSupply(), (2**64) * (1000000000));
     }
 
     function testBalanceOf() public {
