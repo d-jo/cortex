@@ -44,7 +44,7 @@ contract Cortex is ERC20Interface {
     string public constant NAME = "cortex";
     string public constant SYMBOL = "ctx";
     uint8 public constant DECIMALS = 10;
-    uint256 constant public _totalSupply = 2**256 - 1; // big number
+    uint256 constant public _totalSupply = (2**64) * (1,000,000,000); // create 2^64 cortex = (2^64) * 1 billion neurons
 
 
     // ================================================
