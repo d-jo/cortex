@@ -43,8 +43,8 @@ contract Cortex is ERC20Interface {
     string public constant STANDARD = "ERC20";
     string public constant NAME = "cortex";
     string public constant SYMBOL = "ctx";
-    uint8 public constant DECIMALS = 18;
-    uint256 public constant _totalSupply = 2**256 - 1; // big number
+    uint8 public constant DECIMALS = 10;
+    uint256 constant public _totalSupply = 2**256 - 1; // big number
 
 
     // ================================================
